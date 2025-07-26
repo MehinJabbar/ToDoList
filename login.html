@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPA Sign In</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3"></script>
+    
+</head>
+<body>
+<div id="app">
+    <!-- LOGIN VIEW -->
+    <div v-if="view === 'login'">
+        <h3>Sign in</h3>
+        <form @submit.prevent="login">
+            <input v-model="loginForm.email" type="email" placeholder="Your email.." required>
+            <input v-model="loginForm.password" type="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? 
+            <a href="#" @click.prevent="view='register'">Create an account</a>
+        </p>
+    </div>
+
+    <!-- REGISTER VIEW -->
+    <div v-if="view === 'register'">
+        <h3>Sign up</h3>
+        <form @submit.prevent="register">
+            <input v-model="registerForm.fname" type="text" placeholder="Your name.." required>
+            <input v-model="registerForm.lname" type="text" placeholder="Your last name.." required>
+            <input v-model="registerForm.email" type="email" placeholder="Your email.." required>
+            <input v-model="registerForm.password" type="password" placeholder="Password" required>
+            <select v-model="registerForm.country">
+                <option disabled value="">Select Country</option>
+                <option value="australia">Australia</option>
+                <option value="canada">Canada</option>
+                <option value="usa">USA</option>
+            </select>
+
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? 
+            <a href="#" @click.prevent="view = 'login'">Login</a>
+        </p>
+    </div>
+
+    <!--TO DO LIST-->
+
+    <div v-if="view === 'todo'">
+        <h1>Welcome!</h1> <!--<h1>Welcome, {{ currentUser.fname }}</h1>-->
+        <button @click="logout">Logout</button>
+        <div>
+            <input v-model="newTask.name" type="text" placeholder="To do">
+            <input v-model="newTask.desc" type="text" placeholder="Description">
+            <input v-model="newTask.date" type="date">
+            <button @click="addTask">Submit</button>
+        </div>
+
+        <!-- Task cards -->
+        <div class="task-container" v-if="tasks.length > 0">
+            <div class="task-card" v-for="(task, index) in tasks" :key="index">
+                <h3>{{ task.name }}</h3>
+                <p>{{ task.description }}</p>
+                <p><strong>Due:</strong> {{ task.due_date }}</p>
+                <button @click="removeTask(index)">Remove</button>
+            </div>
+        </div>
+        <p v-else>No tasks yet. Add one above!</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
