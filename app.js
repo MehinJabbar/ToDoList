@@ -31,12 +31,39 @@ createApp({
         // },
         async login() {
             const { data, error } = await supabaseClient.auth.signInWithPassword({
-              email: this.loginForm.email,    // fixed from useremail → email
-              password: this.loginForm.password
+                email: this.loginForm.email,
+                password: this.loginForm.password
             });
             if (error) return alert(error.message);
-            this.currentUser = data.user;     // fixed: use data.user (object)
-            await this.fetchTasks();          // load tasks from Supabase
+        
+            this.currentUser = data.user;
+        
+            // check if profile exists
+            let { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('fname, lname, country')
+                .eq('id', this.currentUser.id)
+                .single();
+        
+            // If not exists, create profile
+            if (!profile) {
+                const { error: insertError } = await supabaseClient.from('profiles').insert([{
+                    id: this.currentUser.id,
+                    fname: this.registerForm.fname || '',
+                    lname: this.registerForm.lname || '',
+                    country: this.registerForm.country || ''
+                }]);
+                if (insertError) console.error(insertError);
+                profile = { fname: this.registerForm.fname, lname: this.registerForm.lname, country: this.registerForm.country };
+            }
+        
+            this.currentUser.fname = profile.fname;
+            this.currentUser.lname = profile.lname;
+            this.currentUser.country = profile.country;
+
+            console.log("Username: ", this.currentUser.fname)
+        
+            await this.fetchTasks();
             this.view = 'todo';
         },
 
