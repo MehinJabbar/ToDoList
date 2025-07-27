@@ -48,7 +48,7 @@
     <!--TO DO LIST-->
 
     <div v-if="view === 'todo'">
-        <h1>Welcome!</h1> <!--<h1>Welcome, {{ currentUser.fname }}</h1>-->
+        <h1>Welcome, {{ this.currentUser.fname }} {{ this.currentUser.lname }} from {{ this.currentUser.country }}</h1> <!--<h1>Welcome, {{ currentUser.fname }}</h1>-->
         <button @click="logout">Logout</button>
         <div>
             <input v-model="newTask.name" type="text" placeholder="To do">
